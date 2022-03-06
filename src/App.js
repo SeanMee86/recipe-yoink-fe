@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import {useState} from "react";
 
 function App() {
+
+  const [url, setUrl] = useState(null);
+  const [selector, setSelector] = useState(null);
+  const [recipe, setRecipe] = useState(null);
+
+  const base_url = 'http://localhost:8000';
+
+  const onUrlChange = (e) => {
+    setUrl(e.target.value)
+  }
+
+  const onSelectorChange = (e) => {
+    setSelector(e.target.value)
+  }
+
+  const onSubmit = () => {
+    axios.post(`${base_url}/getUrl`, {url, selector})
+        .then(res => {
+          setRecipe(res.data)
+        })
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input onChange={onUrlChange} type="text"/>
+        <br/>
+      <input onChange={onSelectorChange} type="text"/>
+        <br/>
+      <button onClick={onSubmit}>Call Service</button>
+        <div style={{padding: '60px'}} dangerouslySetInnerHTML={{__html: recipe}}/>
     </div>
   );
 }
